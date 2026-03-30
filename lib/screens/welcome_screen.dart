@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'signup_screen.dart';
 class WelcomeScreen extends StatefulWidget {
-  final String name;
+  final String? name;
 
-  const WelcomeScreen({super.key, required this.name});
+  const WelcomeScreen({super.key,this.name});
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
@@ -25,6 +26,17 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       curve: Curves.easeIn,
     );
     _controller.forward();
+
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SignupScreen(), // 🆕 go to signup
+          ),
+        );
+      }
+    });
   }
 
   @override
