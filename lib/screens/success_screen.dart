@@ -95,7 +95,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const WelcomeScreen()),
+                          builder: (context) => const WelcomeScreen(name: '')),
                       (route) => false,
                     );
                   },
