@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/welcome_screen.dart';
+import 'package:confetti/confetti.dart';
+import 'welcome_screen.dart';
 
 class SuccessScreen extends StatefulWidget {
   final String userName;
@@ -9,167 +10,104 @@ class SuccessScreen extends StatefulWidget {
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
 }
-class _SuccessScreenState extends State<SuccessScreen> {
-  
- final   _formKey = GlobalKey<FormState>();
- final   _nameController = TextEditingController();
-  
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _birthdateController = TextEditingController();
 
-  bool _isPasswordVisible = false;
-  bool _isLoading = false;
+class _SuccessScreenState extends State<SuccessScreen> {
+  late ConfettiController _confettiController;
 
   @override
-   void dispose() {
-        _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _birthdateController.dispose();
+  void initState() {
+    super.initState();
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 3));
+    _confettiController.play();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
     super.dispose();
-  }
-
-  // 📅 Date Picker
-  Future<void> _pickBirthdate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(2005),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-
-    if (picked != null) {
-      _birthdateController.text =
-          "${picked.month}/${picked.day}/${picked.year}";
-    }
-  }
-
-  // 🚀 Handle Signup
-  Future<void> _handleSignup() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-
-      await Future.delayed(const Duration(seconds: 2)); // loading animation
-
-      setState(() => _isLoading = false);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              SuccessScreen(userName: _nameController.text),
-        ),
-      );
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Create Your Account"),
-        backgroundColor: Colors.purple,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              // 👤 Name
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: "Full Name",
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Enter your name" : null,
-              ),
-              const SizedBox(height: 16),
-
-              // 📧 Email
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: "Email Address",
-                  prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Enter your email";
-                  }
-                  if (!value.contains("@")) {
-                    return "Enter a valid email";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-
-              TextFormField(
-                controller: _passwordController,
-                obscureText: !_isPasswordVisible,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  prefixIcon: const Icon(Icons.lock),
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: Icon(_isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() => _isPasswordVisible = !_isPasswordVisible);
-                    },
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Enter a password";
-                  }
-                  if (value.length < 6) {
-                    return "Password must be at least 6 characters";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // 🎂 Birthdate
-              TextFormField(
-                controller: _birthdateController,
-                readOnly: true,
-                decoration: const InputDecoration(
-                  labelText: "Birthdate",
-                  prefixIcon: Icon(Icons.calendar_month),
-                  border: OutlineInputBorder(),
-                ),
-                onTap: _pickBirthdate,
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Please enter your birthdate" : null,
-              ),
-              const SizedBox(height: 24),
-
-              // 🚀 Submit Button
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                      onPressed: _handleSignup,
-                      child: const Text(
-                        "SUCCESS",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                    ),
+      backgroundColor: Colors.white,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          // 🎊 Confetti Animation
+          ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirectionality: BlastDirectionality.explosive,
+            shouldLoop: false,
+            colors: const [
+              Colors.purple,
+              Colors.blue,
+              Colors.pink,
+              Colors.orange,
+              Colors.green,
             ],
           ),
-        ),
+
+          // 🎉 Main Content
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.check_circle,
+                  color: Colors.purple,
+                  size: 90,
+                ),
+                const SizedBox(height: 20),
+
+                Text(
+                  "Welcome, ${widget.userName}!",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.purple,
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                const Text(
+                  "Your account has been successfully created.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black87,
+                  ),
+                ),
+
+                const SizedBox(height: 40),
+
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                  ),
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const WelcomeScreen()),
+                      (route) => false,
+                    );
+                  },
+                  child: const Text(
+                    "Back to Start",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
