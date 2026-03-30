@@ -9,7 +9,7 @@ class SuccessScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Success"),
+        title: const Text("Create Your Account"),
         backgroundColor: Colors.purple,
       ),
       body: Center(
